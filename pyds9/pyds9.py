@@ -810,19 +810,29 @@ class DS9(object):
     def scale(self, z1, z2):
         self.set('scale limits %f %f' %(z1, z2))
 
-    def set_defaults(self, match='image', verbose=False):
+    def set_defaults(self, scale='log', match='image', verbose=False):
         """
         Match frame, set log scale
         """
+        if scale == 'log':
+            scale_limits = '-0.1 10'
+            cmap_value = '3 0.45'
+        elif scale == 'sqrt':
+            scale_limits = '0 0.1'
+            cmap_value = '1 0.5'
+        else:
+            scale_limits = '0 0.1'
+            cmap_value = '1 0.5'
+
         commands = """
-        xpaset -p ds9 scale log
-        xpaset -p ds9 scale limits -0.1 10
-        xpaset -p ds9 cmap value 3.02222 0.647552
-        xpaset -p ds9 match frames %s
+        xpaset -p ds9 scale %s
+        xpaset -p ds9 scale limits %s
+        xpaset -p ds9 cmap value %s
+        xpaset -p ds9 match frame %s
         xpaset -p ds9 frame lock %s
-        xpaset -p ds9 match colorbars
+        xpaset -p ds9 match colorbar
         xpaset -p ds9 lock colorbar
-        xpaset -p ds9 match scales""" %(match, match)
+        xpaset -p ds9 match scale""" %(scale, scale_limits, cmap_value, match, match)
 
         for c in commands.split('\n'):
             if 'xpaset' in c:
@@ -832,7 +842,7 @@ class DS9(object):
 
     def match(self, match='image'):
         commands = """
-        xpaset -p ds9 match frames %s
+        xpaset -p ds9 match frame %s
         xpaset -p ds9 frame lock %s
         """ %(match, match)
 
