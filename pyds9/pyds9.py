@@ -25,9 +25,12 @@ import warnings
 
 from . import xpa
 
-from astropy.extern import six
-from astropy.extern.six import BytesIO
-
+try:
+    from astropy.extern import six
+    from astropy.extern.six import BytesIO
+except:
+    import six
+    from six import BytesIO
 
 # pyds9 version
 __version__ = '1.8.1'
